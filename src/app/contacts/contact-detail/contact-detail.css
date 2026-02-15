@@ -1,0 +1,14 @@
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.pad-left-right {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.label-text {
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
