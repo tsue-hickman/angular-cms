@@ -1,8 +1,13 @@
 <div class="panel panel-default">
   <div class="panel-heading">
     <div class="row pad-left-right">
-      <h4 class="pull-left title">{{ contact?.name }}</h4>
-      <img [src]="contact?.imageUrl" alt="{{ contact?.name }}" class="img-responsive pull-right" style="max-height: 50px;">
+      <h4 class="pull-left title">{{ contact.name }}</h4>
+      <img
+        [src]="contact.imageUrl"
+        [alt]="contact.name"
+        class="img-responsive pull-right"
+        style="max-height: 50px"
+      />
     </div>
     <div class="row pad-left-right">
       <a class="btn btn-primary">Edit</a>
@@ -12,11 +17,11 @@
   <div class="panel-body">
     <div class="row pad-left-right">
       <span class="label-text">Email:</span>
-      <span>{{ contact?.email }}</span>
+      <span>{{ contact.email }}</span>
     </div>
     <div class="row pad-left-right">
       <span class="label-text">Phone:</span>
-      <span>{{ contact?.phone }}</span>
+      <span>{{ contact.phone }}</span>
     </div>
   </div>
 </div>
