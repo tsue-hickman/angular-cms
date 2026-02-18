@@ -1,6 +1,11 @@
 <div class="row">
-  <div class="col-md-12">
-    <h2>Documents View</h2>
-    <p>Documents feature - basic structure in place for Week 3. Full implementation in Week 4.</p>
+  <div class="col-md-5">
+    <cms-document-list (selectedDocumentEvent)="selectedDocument = $event"></cms-document-list>
+  </div>
+  <div class="col-md-4">
+    <cms-document-detail
+      *ngIf="selectedDocument"
+      [document]="selectedDocument"
+    ></cms-document-detail>
   </div>
 </div>
