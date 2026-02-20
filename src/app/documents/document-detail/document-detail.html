@@ -1,30 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import { Document } from '../document.model';
-import { DocumentService } from '../document.service';
-import { ActivatedRoute, Router } from '@angular/router';
-
-@Component({
-  selector: 'cms-document-detail',
-  imports: [],
-  templateUrl: './document-detail.html',
-  styleUrl: './document-detail.css',
-})
-export class DocumentDetailComponent implements OnInit {
-  document!: Document;
-
-  constructor(
-    private documentService: DocumentService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {}
-
-  ngOnInit() {
-    this.route.params.subscribe((params) => {
-      const id = params['id'];
-      const doc = this.documentService.getDocument(id);
-      if (doc) {
-        this.document = doc;
-      }
-    });
-  }
-}
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <div class="row pad-all">
+      <h4 class="title margin-left-right">{{ document.name }}</h4>
+      <div class="row pull-right margin-left-right">
+        <a class="btn btn-primary" (click)="onView()">View</a>
+        <a class="btn btn-info" [routerLink]="['edit']">Edit</a>
+        <a class="btn btn-danger" (click)="onDelete()">Delete</a>
+      </div>
+    </div>
+  </div>
+  <div class="panel-body">
+    <div class="pad-left-right">
+      <div class="row">
+        <label>URL:</label>
+        <span class="label-value">{{ document.url }}</span>
+      </div>
+    </div>
+  </div>
+</div>
