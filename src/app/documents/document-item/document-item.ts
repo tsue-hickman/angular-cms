@@ -1,9 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { Document } from '../document.model';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'cms-document-item',
-  imports: [],
+  imports: [RouterModule],
   templateUrl: './document-item.html',
   styleUrl: './document-item.css',
 })
