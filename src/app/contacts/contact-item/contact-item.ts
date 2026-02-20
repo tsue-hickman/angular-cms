@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { Contact } from '../contact.model';
-import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'cms-contact-item',
-  imports: [CommonModule],
+  imports: [RouterModule],
   templateUrl: './contact-item.html',
   styleUrl: './contact-item.css',
 })
