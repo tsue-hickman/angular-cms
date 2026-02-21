@@ -12,7 +12,7 @@
             size="120"
             max="120"
             #name="ngModel"
-            [ngModel]="contact?.name"
+            [ngModel]="contact.name"
             required
           />
         </div>
@@ -29,7 +29,7 @@
             size="120"
             max="255"
             #email="ngModel"
-            [ngModel]="contact?.email"
+            [ngModel]="contact.email"
             pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
             required
           />
@@ -50,7 +50,7 @@
             size="150"
             max="255"
             #phone="ngModel"
-            [ngModel]="contact?.phone"
+            [ngModel]="contact.phone"
             pattern="\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*"
           />
           <div class="alert alert-danger" *ngIf="phone.touched && !phone.valid">
@@ -69,7 +69,7 @@
             class="form-control"
             size="150"
             max="255"
-            [ngModel]="contact?.imageUrl"
+            [ngModel]="contact.imageUrl"
           />
         </div>
       </div>
@@ -87,7 +87,7 @@
                 </button>
               </div>
             </div>
-            <span class="dragMsg" *ngIf="groupContacts?.length < 1"
+            <span class="dragMsg" *ngIf="groupContacts && groupContacts.length < 1">Drag contacts in group here</span>
               >Drag contacts in group here</span
             >
           </div>

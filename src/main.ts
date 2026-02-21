@@ -1,6 +1,6 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Routes } from '@angular/router';
 import { DocumentsComponent } from './app/documents/documents';
 import { MessageListComponent } from './app/messages/message-list/message-list';
 import { ContactsComponent } from './app/contacts/contacts';
@@ -9,8 +9,8 @@ import { DocumentEditComponent } from './app/documents/document-edit/document-ed
 import { ContactDetailComponent } from './app/contacts/contact-detail/contact-detail';
 import { ContactEditComponent } from './app/contacts/contact-edit/contact-edit';
 
-const routes = [
-  { path: '', redirectTo: '/documents', pathMatch: 'full' },
+const routes: Routes = [
+  { path: '', redirectTo: '/documents', pathMatch: 'full' as const },
   {
     path: 'documents',
     component: DocumentsComponent,
