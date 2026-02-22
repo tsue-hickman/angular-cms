@@ -17,7 +17,7 @@ export class MessageService {
 
   getMessages() {
     this.http
-      .get<Message[]>('https://YOUR-FIREBASE-URL/messages.json')
+      .get<Message[]>('https://cms-tsue-default-rtdb.firebaseio.com/')
       .subscribe(
         (messages: Message[]) => {
           this.messages = messages;
@@ -35,7 +35,7 @@ export class MessageService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
     this.http
-      .put('https://YOUR-FIREBASE-URL/messages.json', messagesString, { headers })
+      .put('https://cms-tsue-default-rtdb.firebaseio.com/messages.json', messagesString, { headers })
       .subscribe(() => {
         this.messageChangedEvent.next(this.messages.slice());
       });

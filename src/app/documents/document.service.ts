@@ -17,7 +17,7 @@ export class DocumentService {
 
   getDocuments() {
     this.http
-      .get<Document[]>('https://YOUR-FIREBASE-URL/documents.json')
+      .get<Document[]>('https://cms-tsue-default-rtdb.firebaseio.com//documents.json')
       .subscribe(
         (documents: Document[]) => {
           this.documents = documents;
@@ -40,7 +40,7 @@ export class DocumentService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
     this.http
-      .put('https://YOUR-FIREBASE-URL/documents.json', documentsString, { headers })
+      .put('https://cms-tsue-default-rtdb.firebaseio.com//documents.json', documentsString, { headers })
       .subscribe(() => {
         this.documentListChangedEvent.next(this.documents.slice());
       });
