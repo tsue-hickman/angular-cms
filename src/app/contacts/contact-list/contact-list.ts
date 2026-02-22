@@ -5,16 +5,18 @@ import { ContactItemComponent } from '../contact-item/contact-item';
 import { ContactService } from '../contact.service';
 import { RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { ContactsFilterPipe } from '../contacts-filter.pipe';
 
 @Component({
   selector: 'cms-contact-list',
-  imports: [CommonModule, ContactItemComponent, RouterModule],
+  imports: [CommonModule, ContactItemComponent, RouterModule, ContactsFilterPipe],
   templateUrl: './contact-list.html',
   styleUrl: './contact-list.css',
 })
 export class ContactListComponent implements OnInit, OnDestroy {
   contacts: Contact[] = [];
   subscription!: Subscription;
+  term: string = '';
 
   constructor(private contactService: ContactService) {}
 
@@ -25,6 +27,10 @@ export class ContactListComponent implements OnInit, OnDestroy {
         this.contacts = contactsList;
       }
     );
+  }
+
+  search(value: string) {
+    this.term = value;
   }
 
   ngOnDestroy() {

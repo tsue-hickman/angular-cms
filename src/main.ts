@@ -1,6 +1,7 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app';
 import { provideRouter, Routes } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
 import { DocumentsComponent } from './app/documents/documents';
 import { MessageListComponent } from './app/messages/message-list/message-list';
 import { ContactsComponent } from './app/contacts/contacts';
@@ -34,6 +35,7 @@ const routes: Routes = [
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideRouter(routes)
+    provideRouter(routes),
+    provideHttpClient()
   ]
 }).catch((err) => console.error(err));
