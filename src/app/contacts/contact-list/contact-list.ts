@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Contact } from '../contact.model';
 import { CommonModule } from '@angular/common';
 import { ContactItemComponent } from '../contact-item/contact-item';
@@ -18,15 +18,18 @@ export class ContactListComponent implements OnInit, OnDestroy {
   subscription!: Subscription;
   term: string = '';
 
-  constructor(private contactService: ContactService) {}
+  constructor(
+    private contactService: ContactService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
-
     this.contactService.getContacts();
 
     this.subscription = this.contactService.contactListChangedEvent.subscribe(
       (contactsList: Contact[]) => {
         this.contacts = contactsList;
+        this.cdr.detectChanges();
       }
     );
   }

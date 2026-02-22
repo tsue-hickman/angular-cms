@@ -16,25 +16,29 @@ export class MessageService {
   }
 
 getMessages() {
+  console.log('🔵 Calling getMessages()...');
   this.http
-    .get<any>('https://cms-tsue-default-rtdb.firebaseio.com/messages.json')
+    .get<Message[]>('https://cms-tsue-default-rtdb.firebaseio.com/messages.json')
     .subscribe(
-      (messagesData: any) => {
-        // Handle null/undefined response
-        if (!messagesData) {
+      (messages: Message[]) => {
+        console.log('🟢 Messages received from Firebase:', messages);
+        console.log('🟢 Is Array?', Array.isArray(messages));
+        console.log('🟢 Length:', messages?.length);
+
+        if (!messages || !Array.isArray(messages)) {
+          console.log('🔴 Messages is null or not an array, setting to []');
           this.messages = [];
           return;
         }
 
-        // Convert object to array
-        const messagesArray: Message[] = Object.keys(messagesData).map(key => messagesData[key]);
-
-        this.messages = messagesArray;
+        this.messages = messages;
         this.maxMessageId = this.getMaxId();
+        console.log('🟢 Messages array set to:', this.messages);
+        console.log('🟢 About to emit event with:', this.messages.slice());
         this.messageChangedEvent.next(this.messages.slice());
       },
       (error: any) => {
-        console.log('Error fetching messages:', error);
+        console.log('🔴 Error fetching messages:', error);
       }
     );
 }

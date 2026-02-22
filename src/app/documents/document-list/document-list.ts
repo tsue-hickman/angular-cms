@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Document } from '../document.model';
 import { DocumentItemComponent } from '../document-item/document-item';
 import { CommonModule } from '@angular/common';
@@ -16,7 +16,10 @@ export class DocumentListComponent implements OnInit, OnDestroy {
   documents: Document[] = [];
   subscription!: Subscription;
 
-  constructor(private documentService: DocumentService) {}
+  constructor(
+    private documentService: DocumentService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this.documentService.getDocuments();
@@ -24,6 +27,7 @@ export class DocumentListComponent implements OnInit, OnDestroy {
     this.subscription = this.documentService.documentListChangedEvent.subscribe(
       (documentsList: Document[]) => {
         this.documents = documentsList;
+        this.cdr.detectChanges();
       }
     );
   }
