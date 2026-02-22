@@ -17,9 +17,15 @@ export class ContactService {
 
   getContacts() {
     this.http
-      .get<Contact[]>('https://cms-tsue-default-rtdb.firebaseio.com//contacts.json')
+      .get<Contact[]>('https://cms-tsue-default-rtdb.firebaseio.com/contacts.json')
       .subscribe(
         (contacts: Contact[]) => {
+          // Handle null/undefined response
+          if (!contacts) {
+            this.contacts = [];
+            return;
+          }
+
           this.contacts = contacts;
           this.maxContactId = this.getMaxId();
           this.contacts.sort((a, b) => {
@@ -40,7 +46,7 @@ export class ContactService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
     this.http
-      .put('https://cms-tsue-default-rtdb.firebaseio.com//contacts.json', contactsString, { headers })
+      .put('https://cms-tsue-default-rtdb.firebaseio.com/contacts.json', contactsString, { headers })
       .subscribe(() => {
         this.contactListChangedEvent.next(this.contacts.slice());
       });

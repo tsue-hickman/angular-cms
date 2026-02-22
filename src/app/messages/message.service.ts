@@ -15,20 +15,26 @@ export class MessageService {
     this.getMessages();
   }
 
-  getMessages() {
-    this.http
-      .get<Message[]>('https://cms-tsue-default-rtdb.firebaseio.com/')
-      .subscribe(
-        (messages: Message[]) => {
-          this.messages = messages;
-          this.maxMessageId = this.getMaxId();
-          this.messageChangedEvent.next(this.messages.slice());
-        },
-        (error: any) => {
-          console.log('Error fetching messages:', error);
+getMessages() {
+  this.http
+    .get<Message[]>('https://cms-tsue-default-rtdb.firebaseio.com/messages.json')
+    .subscribe(
+      (messages: Message[]) => {
+        // Handle null/undefined response
+        if (!messages) {
+          this.messages = [];
+          return;
         }
-      );
-  }
+
+        this.messages = messages;
+        this.maxMessageId = this.getMaxId();
+        this.messageChangedEvent.next(this.messages.slice());
+      },
+      (error: any) => {
+        console.log('Error fetching messages:', error);
+      }
+    );
+}
 
   storeMessages() {
     const messagesString = JSON.stringify(this.messages);

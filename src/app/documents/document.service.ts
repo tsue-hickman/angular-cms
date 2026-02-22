@@ -15,32 +15,38 @@ export class DocumentService {
     this.getDocuments();
   }
 
-  getDocuments() {
-    this.http
-      .get<Document[]>('https://cms-tsue-default-rtdb.firebaseio.com//documents.json')
-      .subscribe(
-        (documents: Document[]) => {
-          this.documents = documents;
-          this.maxDocumentId = this.getMaxId();
-          this.documents.sort((a, b) => {
-            if (a.name < b.name) return -1;
-            if (a.name > b.name) return 1;
-            return 0;
-          });
-          this.documentListChangedEvent.next(this.documents.slice());
-        },
-        (error: any) => {
-          console.log('Error fetching documents:', error);
+getDocuments() {
+  this.http
+    .get<Document[]>('https://cms-tsue-default-rtdb.firebaseio.com/documents.json')
+    .subscribe(
+      (documents: Document[]) => {
+        // Handle null/undefined response
+        if (!documents) {
+          this.documents = [];
+          return;
         }
-      );
-  }
+
+        this.documents = documents;
+        this.maxDocumentId = this.getMaxId();
+        this.documents.sort((a, b) => {
+          if (a.name < b.name) return -1;
+          if (a.name > b.name) return 1;
+          return 0;
+        });
+        this.documentListChangedEvent.next(this.documents.slice());
+      },
+      (error: any) => {
+        console.log('Error fetching documents:', error);
+      }
+    );
+}
 
   storeDocuments() {
     const documentsString = JSON.stringify(this.documents);
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
     this.http
-      .put('https://cms-tsue-default-rtdb.firebaseio.com//documents.json', documentsString, { headers })
+      .put('https://cms-tsue-default-rtdb.firebaseio.com/documents.json', documentsString, { headers })
       .subscribe(() => {
         this.documentListChangedEvent.next(this.documents.slice());
       });
