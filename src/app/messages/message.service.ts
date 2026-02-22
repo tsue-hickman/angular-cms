@@ -17,16 +17,19 @@ export class MessageService {
 
 getMessages() {
   this.http
-    .get<Message[]>('https://cms-tsue-default-rtdb.firebaseio.com/messages.json')
+    .get<any>('https://cms-tsue-default-rtdb.firebaseio.com/messages.json')
     .subscribe(
-      (messages: Message[]) => {
+      (messagesData: any) => {
         // Handle null/undefined response
-        if (!messages) {
+        if (!messagesData) {
           this.messages = [];
           return;
         }
 
-        this.messages = messages;
+        // Convert object to array
+        const messagesArray: Message[] = Object.keys(messagesData).map(key => messagesData[key]);
+
+        this.messages = messagesArray;
         this.maxMessageId = this.getMaxId();
         this.messageChangedEvent.next(this.messages.slice());
       },

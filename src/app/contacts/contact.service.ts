@@ -16,31 +16,33 @@ export class ContactService {
   }
 
   getContacts() {
-    this.http
-      .get<Contact[]>('https://cms-tsue-default-rtdb.firebaseio.com/contacts.json')
-      .subscribe(
-        (contacts: Contact[]) => {
-          // Handle null/undefined response
-          if (!contacts) {
-            this.contacts = [];
-            return;
-          }
-
-          this.contacts = contacts;
-          this.maxContactId = this.getMaxId();
-          this.contacts.sort((a, b) => {
-            if (a.name < b.name) return -1;
-            if (a.name > b.name) return 1;
-            return 0;
-          });
-          this.contactListChangedEvent.next(this.contacts.slice());
-        },
-        (error: any) => {
-          console.log('Error fetching contacts:', error);
+  this.http
+    .get<any>('https://cms-tsue-default-rtdb.firebaseio.com/contacts.json')
+    .subscribe(
+      (contactsData: any) => {
+        // Handle null/undefined response
+        if (!contactsData) {
+          this.contacts = [];
+          return;
         }
-      );
-  }
 
+        // Convert object to array
+        const contactsArray: Contact[] = Object.keys(contactsData).map(key => contactsData[key]);
+
+        this.contacts = contactsArray;
+        this.maxContactId = this.getMaxId();
+        this.contacts.sort((a, b) => {
+          if (a.name < b.name) return -1;
+          if (a.name > b.name) return 1;
+          return 0;
+        });
+        this.contactListChangedEvent.next(this.contacts.slice());
+      },
+      (error: any) => {
+        console.log('Error fetching contacts:', error);
+      }
+    );
+}
   storeContacts() {
     const contactsString = JSON.stringify(this.contacts);
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });

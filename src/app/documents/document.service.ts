@@ -17,16 +17,19 @@ export class DocumentService {
 
 getDocuments() {
   this.http
-    .get<Document[]>('https://cms-tsue-default-rtdb.firebaseio.com/documents.json')
+    .get<any>('https://cms-tsue-default-rtdb.firebaseio.com/documents.json')
     .subscribe(
-      (documents: Document[]) => {
+      (documentsData: any) => {
         // Handle null/undefined response
-        if (!documents) {
+        if (!documentsData) {
           this.documents = [];
           return;
         }
 
-        this.documents = documents;
+        // Convert object to array
+        const documentsArray: Document[] = Object.keys(documentsData).map(key => documentsData[key]);
+
+        this.documents = documentsArray;
         this.maxDocumentId = this.getMaxId();
         this.documents.sort((a, b) => {
           if (a.name < b.name) return -1;
