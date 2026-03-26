@@ -9,50 +9,28 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 export class DocumentService {
   documents: Document[] = [];
   documentListChangedEvent = new Subject<Document[]>();
-  maxDocumentId: number = 0;
 
   constructor(private http: HttpClient) {
     this.getDocuments();
   }
 
-getDocuments() {
-  this.http
-    .get<any>('https://cms-tsue-default-rtdb.firebaseio.com/documents.json')
-    .subscribe(
-      (documentsData: any) => {
-        // Handle null/undefined response
-        if (!documentsData) {
-          this.documents = [];
-          return;
-        }
-
-        // Convert object to array
-        const documentsArray: Document[] = Object.keys(documentsData).map(key => documentsData[key]);
-
-        this.documents = documentsArray;
-        this.maxDocumentId = this.getMaxId();
-        this.documents.sort((a, b) => {
-          if (a.name < b.name) return -1;
-          if (a.name > b.name) return 1;
-          return 0;
-        });
-        this.documentListChangedEvent.next(this.documents.slice());
-      },
-      (error: any) => {
-        console.log('Error fetching documents:', error);
-      }
-    );
-}
-
-  storeDocuments() {
-    const documentsString = JSON.stringify(this.documents);
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-
+  getDocuments() {
     this.http
-      .put('https://cms-tsue-default-rtdb.firebaseio.com/documents.json', documentsString, { headers })
-      .subscribe(() => {
-        this.documentListChangedEvent.next(this.documents.slice());
-      });
+      .get<{ message: string, documents: Document[] }>('http://localhost:3000/documents')
+      .subscribe(
+        (responseData) => {
+          this.documents = responseData.documents;
+          this.documents.sort((a, b) => {
+            if (a.name < b.name) return -1;
+            if (a.name > b.name) return 1;
+            return 0;
+          });
+          this.documentListChangedEvent.next(this.documents.slice());
+        },
+        (error: any) => {
+          console.log('Error fetching documents:', error);
+        }
+      );
   }
 
   getDocument(id: string): Document | null {
@@ -64,49 +42,81 @@ getDocuments() {
     return null;
   }
 
-  getMaxId(): number {
-    let maxId = 0;
-    for (const document of this.documents) {
-      const currentId = parseInt(document.id);
-      if (currentId > maxId) {
-        maxId = currentId;
-      }
-    }
-    return maxId;
+  sortAndSend() {
+    this.documents.sort((a, b) => {
+      if (a.name < b.name) return -1;
+      if (a.name > b.name) return 1;
+      return 0;
+    });
+    this.documentListChangedEvent.next(this.documents.slice());
   }
 
-  addDocument(newDocument: Document) {
-    if (!newDocument) {
+  addDocument(document: Document) {
+    if (!document) {
       return;
     }
-    this.maxDocumentId++;
-    newDocument.id = String(this.maxDocumentId);
-    this.documents.push(newDocument);
-    this.storeDocuments();
+
+    document.id = '';
+
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    this.http.post<{ message: string, document: Document }>(
+      'http://localhost:3000/documents',
+      document,
+      { headers: headers }
+    ).subscribe(
+      (responseData) => {
+        this.documents.push(responseData.document);
+        this.sortAndSend();
+      }
+    );
   }
 
   updateDocument(originalDocument: Document, newDocument: Document) {
     if (!originalDocument || !newDocument) {
       return;
     }
-    const pos = this.documents.indexOf(originalDocument);
+
+    const pos = this.documents.findIndex(d => d.id === originalDocument.id);
+
     if (pos < 0) {
       return;
     }
+
     newDocument.id = originalDocument.id;
-    this.documents[pos] = newDocument;
-    this.storeDocuments();
+    newDocument._id = originalDocument._id;
+
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    this.http.put(
+      'http://localhost:3000/documents/' + originalDocument.id,
+      newDocument,
+      { headers: headers }
+    ).subscribe(
+      (response: Response) => {
+        this.documents[pos] = newDocument;
+        this.sortAndSend();
+      }
+    );
   }
 
   deleteDocument(document: Document) {
     if (!document) {
       return;
     }
-    const pos = this.documents.indexOf(document);
+
+    const pos = this.documents.findIndex(d => d.id === document.id);
+
     if (pos < 0) {
       return;
     }
-    this.documents.splice(pos, 1);
-    this.storeDocuments();
+
+    this.http.delete('http://localhost:3000/documents/' + document.id)
+      .subscribe(
+        (response: Response) => {
+          this.documents.splice(pos, 1);
+          this.sortAndSend();
+        }
+      );
   }
 }
