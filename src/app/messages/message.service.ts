@@ -9,49 +9,23 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 export class MessageService {
   messages: Message[] = [];
   messageChangedEvent = new Subject<Message[]>();
-  maxMessageId: number = 0;
 
   constructor(private http: HttpClient) {
     this.getMessages();
   }
 
-getMessages() {
-  console.log('🔵 Calling getMessages()...');
-  this.http
-    .get<Message[]>('https://cms-tsue-default-rtdb.firebaseio.com/messages.json')
-    .subscribe(
-      (messages: Message[]) => {
-        console.log('🟢 Messages received from Firebase:', messages);
-        console.log('🟢 Is Array?', Array.isArray(messages));
-        console.log('🟢 Length:', messages?.length);
-
-        if (!messages || !Array.isArray(messages)) {
-          console.log('🔴 Messages is null or not an array, setting to []');
-          this.messages = [];
-          return;
-        }
-
-        this.messages = messages;
-        this.maxMessageId = this.getMaxId();
-        console.log('🟢 Messages array set to:', this.messages);
-        console.log('🟢 About to emit event with:', this.messages.slice());
-        this.messageChangedEvent.next(this.messages.slice());
-      },
-      (error: any) => {
-        console.log('🔴 Error fetching messages:', error);
-      }
-    );
-}
-
-  storeMessages() {
-    const messagesString = JSON.stringify(this.messages);
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-
+  getMessages() {
     this.http
-      .put('https://cms-tsue-default-rtdb.firebaseio.com/messages.json', messagesString, { headers })
-      .subscribe(() => {
-        this.messageChangedEvent.next(this.messages.slice());
-      });
+      .get<{ message: string, messages: Message[] }>('http://localhost:3000/messages')
+      .subscribe(
+        (responseData) => {
+          this.messages = responseData.messages;
+          this.messageChangedEvent.next(this.messages.slice());
+        },
+        (error: any) => {
+          console.log('Error fetching messages:', error);
+        }
+      );
   }
 
   getMessage(id: string): Message | null {
@@ -63,24 +37,76 @@ getMessages() {
     return null;
   }
 
-  getMaxId(): number {
-    let maxId = 0;
-    for (const message of this.messages) {
-      const currentId = parseInt(message.id);
-      if (currentId > maxId) {
-        maxId = currentId;
-      }
-    }
-    return maxId;
+  sortAndSend() {
+    this.messageChangedEvent.next(this.messages.slice());
   }
 
   addMessage(message: Message) {
     if (!message) {
       return;
     }
-    this.maxMessageId++;
-    message.id = String(this.maxMessageId);
-    this.messages.push(message);
-    this.storeMessages();
+
+    message.id = '';
+
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    this.http.post<{ message: string, message: Message }>(
+      'http://localhost:3000/messages',
+      message,
+      { headers: headers }
+    ).subscribe(
+      (responseData) => {
+        this.messages.push(responseData.message);
+        this.sortAndSend();
+      }
+    );
+  }
+
+  updateMessage(originalMessage: Message, newMessage: Message) {
+    if (!originalMessage || !newMessage) {
+      return;
+    }
+
+    const pos = this.messages.findIndex(m => m.id === originalMessage.id);
+
+    if (pos < 0) {
+      return;
+    }
+
+    newMessage.id = originalMessage.id;
+    newMessage._id = originalMessage._id;
+
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    this.http.put(
+      'http://localhost:3000/messages/' + originalMessage.id,
+      newMessage,
+      { headers: headers }
+    ).subscribe(
+      (response: Response) => {
+        this.messages[pos] = newMessage;
+        this.sortAndSend();
+      }
+    );
+  }
+
+  deleteMessage(message: Message) {
+    if (!message) {
+      return;
+    }
+
+    const pos = this.messages.findIndex(m => m.id === message.id);
+
+    if (pos < 0) {
+      return;
+    }
+
+    this.http.delete('http://localhost:3000/messages/' + message.id)
+      .subscribe(
+        (response: Response) => {
+          this.messages.splice(pos, 1);
+          this.sortAndSend();
+        }
+      );
   }
 }
