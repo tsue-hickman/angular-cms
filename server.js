@@ -5,6 +5,7 @@ var http = require('http');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var mongoose = require('mongoose');
 
 // import the routing file to handle the default (index) route
 var index = require('./server/routes/app');
@@ -50,6 +51,15 @@ app.use('/', index);
 app.use('/documents', documentsRoutes);
 app.use('/messages', messagesRoutes);
 app.use('/contacts', contactsRoutes);
+
+// establish a connection to the mongo database
+mongoose.connect('mongodb://localhost:27017/cms')
+  .then(() => {
+    console.log('Connected to database!');
+  })
+  .catch((err) => {
+    console.log('Connection failed: ' + err);
+  });
 
 // Define the port address and tell express to use this port
 const port = process.env.PORT || '3000';
