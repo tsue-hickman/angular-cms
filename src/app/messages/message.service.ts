@@ -16,9 +16,9 @@ export class MessageService {
 
   getMessages() {
     this.http
-      .get<{ message: string, messages: Message[] }>('http://localhost:3000/messages')
+      .get<any>('http://localhost:3000/messages')
       .subscribe(
-        (responseData) => {
+        (responseData: any) => {
           this.messages = responseData.messages;
           this.messageChangedEvent.next(this.messages.slice());
         },
@@ -50,12 +50,12 @@ export class MessageService {
 
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-    this.http.post<{ message: string, message: Message }>(
+    this.http.post<any>(
       'http://localhost:3000/messages',
       message,
       { headers: headers }
     ).subscribe(
-      (responseData) => {
+      (responseData: any) => {
         this.messages.push(responseData.message);
         this.sortAndSend();
       }
@@ -83,7 +83,7 @@ export class MessageService {
       newMessage,
       { headers: headers }
     ).subscribe(
-      (response: Response) => {
+      (response: any) => {
         this.messages[pos] = newMessage;
         this.sortAndSend();
       }
@@ -103,7 +103,7 @@ export class MessageService {
 
     this.http.delete('http://localhost:3000/messages/' + message.id)
       .subscribe(
-        (response: Response) => {
+        (response: any) => {
           this.messages.splice(pos, 1);
           this.sortAndSend();
         }

@@ -1,8 +1,11 @@
-export interface Contact {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  imageUrl: string;
-  group: Contact[] | null;
+export class Contact {
+  constructor(
+    public _id: string,
+    public id: string,
+    public name: string,
+    public email: string,
+    public phone: string,
+    public imageUrl: string,
+    public group: Contact[]
+  ) {}
 }
