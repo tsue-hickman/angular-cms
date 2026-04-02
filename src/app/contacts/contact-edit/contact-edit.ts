@@ -26,28 +26,29 @@ export class ContactEditComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.params.subscribe((params: Params) => {
-      const id = params['id'];
-      if (!id) {
-        this.editMode = false;
-        return;
-      }
+  this.contact = new Contact('', '', '', '', '', '', null);
 
-      const originalContact = this.contactService.getContact(id);
-      if (!originalContact) {
-        return;
-      }
+  this.route.params.subscribe((params: Params) => {
+    const id = params['id'];
+    if (!id) {
+      this.editMode = false;
+      return;
+    }
 
-      this.editMode = true;
-      this.originalContact = originalContact;
-      this.contact = JSON.parse(JSON.stringify(originalContact));
+    const originalContact = this.contactService.getContact(id);
+    if (!originalContact) {
+      return;
+    }
 
-      if (this.contact.group) {
-        this.groupContacts = JSON.parse(JSON.stringify(this.contact.group));
-      }
-    });
-  }
+    this.editMode = true;
+    this.originalContact = originalContact;
+    this.contact = JSON.parse(JSON.stringify(originalContact));
 
+    if (this.contact.group) {
+      this.groupContacts = JSON.parse(JSON.stringify(this.contact.group));
+    }
+  });
+}
   onSubmit(form: NgForm) {
     const value = form.value;
     const newContact: Contact = new Contact(

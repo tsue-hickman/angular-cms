@@ -24,6 +24,8 @@ export class DocumentEditComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.document = new Document('', '', '', '', '', null);
+
     this.route.params.subscribe((params: Params) => {
       const id = params['id'];
       if (!id) {

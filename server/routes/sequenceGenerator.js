@@ -8,10 +8,15 @@ var sequenceId = null;
 function SequenceGenerator() {
   Sequence.findOne()
     .then(sequence => {
-      sequenceId = sequence._id;
-      maxDocumentId = sequence.maxDocumentId;
-      maxMessageId = sequence.maxMessageId;
-      maxContactId = sequence.maxContactId;
+      if (sequence) {
+        sequenceId = sequence._id;
+        maxDocumentId = sequence.maxDocumentId;
+        maxMessageId = sequence.maxMessageId;
+        maxContactId = sequence.maxContactId;
+        console.log('SequenceGenerator initialized:', { maxDocumentId, maxMessageId, maxContactId });
+      } else {
+        console.log('No sequence document found in database!');
+      }
     })
     .catch(err => {
       console.log('SequenceGenerator error: ' + err);
