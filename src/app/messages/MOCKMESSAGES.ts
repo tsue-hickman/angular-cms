@@ -1,15 +1,15 @@
 import {Message} from './message.model';
 
-export const MOCKMESSAGES: Message[] = [
+export const MOCKMESSAGES: any[] = [
   {
-    id: '1', 
-   subject: 'CIT 366 assignment 1', 
-   msgText: 'The grades for this assignment have been posted.', 
+    id: '1',
+   subject: 'CIT 366 assignment 1',
+   msgText: 'The grades for this assignment have been posted.',
    sender: '7'},
   {
-    id: '2', 
-    subject: 'CIT 366 assignment 3', 
-    msgText: 'When is assignment 3 due?', 
+    id: '2',
+    subject: 'CIT 366 assignment 3',
+    msgText: 'When is assignment 3 due?',
     sender: '13'},
   {
     id: '3',
@@ -24,9 +24,9 @@ export const MOCKMESSAGES: Message[] = [
     sender: '3'
   },
   {
-    id: '5', 
-    subject: 'Assignment 3 help', 
-    msgText: 'I can meet with you today at 4:00 PM in my office.', 
+    id: '5',
+    subject: 'Assignment 3 help',
+    msgText: 'I can meet with you today at 4:00 PM in my office.',
     sender: '7'}
 ];
 

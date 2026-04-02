@@ -93,7 +93,7 @@ export class ContactService {
       newContact,
       { headers: headers }
     ).subscribe(
-      (response: Response) => {
+      (response: any) => {
         this.contacts[pos] = newContact;
         this.sortAndSend();
       }
@@ -113,7 +113,7 @@ export class ContactService {
 
     this.http.delete('http://localhost:3000/contacts/' + contact.id)
       .subscribe(
-        (response: Response) => {
+        (response: any) => {
           this.contacts.splice(pos, 1);
           this.sortAndSend();
         }

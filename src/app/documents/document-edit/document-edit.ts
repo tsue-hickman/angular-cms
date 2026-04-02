@@ -43,22 +43,24 @@ export class DocumentEditComponent implements OnInit {
   }
 
   onSubmit(form: NgForm) {
-  const value = form.value;
-  const newDocument: Document = {
-    id: '',
-    name: value.name,
-    url: value.url,
-    children: null
-  };
+    const value = form.value;
+    const newDocument: Document = new Document(
+      '',
+      '',
+      value.name,
+      value.description || '',
+      value.url,
+      null
+    );
 
-  if (this.editMode) {
-    this.documentService.updateDocument(this.originalDocument, newDocument);
-  } else {
-    this.documentService.addDocument(newDocument);
+    if (this.editMode) {
+      this.documentService.updateDocument(this.originalDocument, newDocument);
+    } else {
+      this.documentService.addDocument(newDocument);
+    }
+
+    this.router.navigate(['/documents']);
   }
-
-  this.router.navigate(['/documents']);
-}
 
   onCancel() {
     this.router.navigate(['/documents']);

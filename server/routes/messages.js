@@ -5,6 +5,7 @@ const Message = require('../models/message');
 
 router.get('/', (req, res, next) => {
   Message.find()
+    .populate('sender')
     .then(messages => {
       res.status(200).json({
         message: 'Messages fetched successfully!',
@@ -73,4 +74,27 @@ router.put('/:id', (req, res, next) => {
 });
 
 router.delete('/:id', (req, res, next) => {
-  Message.findOne
+  Message.findOne({ id: req.params.id })
+    .then(message => {
+      Message.deleteOne({ id: req.params.id })
+        .then(result => {
+          res.status(204).json({
+            message: 'Message deleted successfully'
+          });
+        })
+        .catch(error => {
+          res.status(500).json({
+            message: 'An error occurred',
+            error: error
+          });
+        });
+    })
+    .catch(error => {
+      res.status(500).json({
+        message: 'Message not found.',
+        error: { message: 'Message not found' }
+      });
+    });
+});
+
+module.exports = router;

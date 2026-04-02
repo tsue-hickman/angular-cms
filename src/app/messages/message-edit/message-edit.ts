@@ -11,7 +11,7 @@ import { MessageService } from '../message.service';
 export class MessageEditComponent {
   @ViewChild('subject') subjectRef!: ElementRef;
   @ViewChild('msgText') msgTextRef!: ElementRef;
-  currentSender = '7'; // R. Kent Jackson's ID
+  currentSender = '7';
 
   constructor(private messageService: MessageService) {}
 
@@ -19,6 +19,7 @@ export class MessageEditComponent {
     const subject = this.subjectRef.nativeElement.value;
     const msgText = this.msgTextRef.nativeElement.value;
     const newMessage = new Message(
+      '',
       String(Date.now()),
       subject,
       msgText,

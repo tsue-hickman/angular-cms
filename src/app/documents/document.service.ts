@@ -93,7 +93,7 @@ export class DocumentService {
       newDocument,
       { headers: headers }
     ).subscribe(
-      (response: Response) => {
+      (response: any) => {
         this.documents[pos] = newDocument;
         this.sortAndSend();
       }
@@ -113,7 +113,7 @@ export class DocumentService {
 
     this.http.delete('http://localhost:3000/documents/' + document.id)
       .subscribe(
-        (response: Response) => {
+        (response: any) => {
           this.documents.splice(pos, 1);
           this.sortAndSend();
         }
